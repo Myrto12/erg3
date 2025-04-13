@@ -1,160 +1,159 @@
+//up1119397 ΘΕΟΔΩΡΑΚΟΠΟΥΛΟΣ ΧΡΗΣΤΟΣ
 #include <stdio.h>
 #include <string.h>
-#define words 20000
-#define characters 100
+#define WORDS 100000
+#define MAXCHARS 300   
+#define textFile "keimeno.txt"
+#define dictionaryName "dictionary.txt"
 
+int selectOperation(void);
+void start(void);
+void importText(char text[WORDS][MAXCHARS+1]);
+void importDictionary();
+void editMode();
+void computeStats(char text[WORDS][MAXCHARS+1]);
+void removeSpaces(char word[MAXCHARS+1]);
 
-
-int get_choice(void);
-void text_input(char text[words][characters+1]); 
-void vocabulary_input(char vocabulary[words][characters+1]);
-void text_processing(void);
-void text_statistics(char text[words][characters+1]);
-
-char text[words][characters+1];  
-char vocabulary[words][characters+1];
-
-
-int main(){
-    char word[characters+1];
-    char endword[characters+1] = "telos";
-    char filename[characters+1];
-
-    int exit =0;
-    while(exit!=1){
-        int choice = get_choice();
-        switch(choice){
-            case 1:
-            text_input(text);
-            break;
-            case 2:
-            vocabulary_input(vocabulary);
-            break;
-            case 3:
-            text_processing();
-            break;
-            case 4:
-            text_statistics(text);
-            break;
-            case 5:
-            exit = 1;
-            break;
+int main(int argc, char**argv){
+    int exit = 0;
+    static char text[WORDS][MAXCHARS+1]; //static giati exo stack overflow gia poly megala arxeia
+    static char dictionary[WORDS][MAXCHARS+1];
+    start();
+    do{
+        switch (selectOperation()){
             default:
-            printf("\nChoose one of the options above\n");   
-        }
+                printf("\nNot a valid operation!\n");
+                break;
+            case 0:
+                printf("\n1. Eisagogh Keimenou\n2. Eisagogh leksilogiou\n3. Epeksergasia keimenou/apothikeush leksikou\n4. Ypologismos statistikon tou keimenou\n5. eksodos\n");
+                break;
+            case 1:
+                importText(text);
+                break;
+            case 2:
+                importDictionary(dictionary);
+                break;
+            case 3:
+                editMode();
+                break;
+            case 4:
+                computeStats(text);
+                break;
+            case 5:
+                exit = 1;
+                break;
 
-    }
-    getchar();
+        }
+    } while (exit == 0);
+    
     return 0;
 }
 
-
-int get_choice(void){
-    int choice;
-    printf("1: input text\n2: input vocabulary\n3: text processing\n4: text statistics\n5: exit\n");
-    scanf(" %d", &choice);
-    return choice;
+void start(void){
+    printf("       LAB 3 step 2_3\n\n");
+    printf("Please select Existing Operations\n1. Eisagogh Keimenou\n2. Eisagogh leksilogiou\n3. Epeksergasia keimenou/apothikeush leksikou\n4. Ypologismos statistikon tou keimenou\n5. eksodos\n");
+}
+int selectOperation(void){
+    int input;
+    printf("\n\nPlease select an operation (type '0' for operation list): ");
+    scanf("%d", &input);
+    while (getchar() != '\n'); // katharizo to input buffer
+    return input;
 }
 
-void text_input(char text[words][characters+1]){
-    char filename[characters+1];
-    char word[characters+1];
-    char vocabulary[words][characters+1];
-    char line[characters+1];
-    FILE *fptr;
-    printf("Enter filename(filename.txt)\n");
-    scanf(" %50s",filename);
-    fptr = fopen(filename,"r");
-    if(fptr==NULL){
-        printf("The file was not found or cannot be opened\n");
-        fclose(fptr);
+void importText(char text[WORDS][MAXCHARS+1]){
+    FILE *file;
+    char line[MAXCHARS+1];
+    int i=0;
+
+    file = fopen("keimeno.txt", "r"); 
+    if (file == NULL) {
+        printf("\nThe file '%s' was not found or cannot be opened!\n", textFile);
         return;
     }
-    int text_words = 0;
-    while(fgets(line,characters+1,fptr)){
-        char* tok_ptr = strtok(line, " \t\n\r.,;:!?\"'()[]{}");
-        while(tok_ptr!=NULL){
-            strcpy(text[text_words], tok_ptr);
-            tok_ptr = strtok(NULL, " \t\n\r.,;:!?\"'()[]{}");
-            text_words++;
+    
+    while (fgets(line, MAXCHARS+1, file)) {
+        char *ptr = strtok(line, " \t\n\r.,;:!?\"'()[]{}");
+        while (ptr != NULL) {
+            strcpy(text[i], ptr);
+            i++;
+            ptr = strtok(NULL, " \t\n\r.,;:!?\"'()[]{}");
         }
     }
-    fclose(fptr);
+    
+    printf("The file '%s' has been successfully imported!", textFile);
 }
 
-void vocabulary_input(char vocabulary[words][characters+1]){
-    FILE *fptr;
-    fptr = fopen("dictionary.txt", "r");
-    if (fptr ==NULL){
-        printf("The file 'dictionary.txt' was not found or cannot be opened.\n");
-        fclose(fptr);
+void importDictionary(char dictionary[WORDS][MAXCHARS+1]){
+    FILE *file;
+    char word[MAXCHARS+1];
+    int i=0;
+
+    file = fopen(dictionaryName, "r"); 
+    if (file == NULL) {
+        printf("\nThe file '%s' was not found or cannot be opened.\n", dictionaryName);
+        fclose(file);
         return;
     }
-    int count=0;
-    while(fgets(vocabulary[count],(characters+1),fptr)){count++;}
-    fclose(fptr);
+    while (fgets(word, MAXCHARS+1, file)){strcpy(dictionary[i], word);i++;}
+    printf("\nThe file '%s' has been successfully set as the dictionary!\n", dictionaryName);
+    fclose(file);
 }
 
-void text_processing(void){
-    printf("text_processing\n");
+void editMode(){
+    printf("\neditMode\n");
 }
 
-void text_statistics(char text[words][characters+1]){
-    int words_counter = -1;
-    int character_counter = 0;
-    int number_of_spaces = 0;
-    int characters_with_spaces = 0;
-    char stats_file[characters+1];
-    do{
-        words_counter++;
-        character_counter+=strlen(text[words_counter]);
-    }
-    while(strlen(text[words_counter]) != 0);
-    number_of_spaces = words_counter-1;
-    characters_with_spaces = character_counter + number_of_spaces;
-    printf("Words : %d\nCharacters : %d\nCharacters with spaces : %d\n",words_counter,character_counter,characters_with_spaces);
-
-    int i,j,k;
-    int histogram_counter = 0;
-    printf("\nHistogram(Number of characters/Words\n");
-    for (i=1; i<characters+1; i++){
-        for (j=0; j<words_counter; j++){
-            if(strlen(text[j]) == i){
-                histogram_counter+=1;
+void computeStats(char text[WORDS][MAXCHARS+1]){
+    int letterSum = 0, wordSum=0, charAndSpaceSum=0,wordLen=0,i=0,epilogh=0;
+    int histogramStats[MAXCHARS] = {0};
+    char fileName[100];
+    printf("\n1: emfanise statistika\n2: apothikeuse statistika");
+    printf("\nPlease select an operation: ");
+    scanf("%d", &epilogh);
+    //lekseis-grammata
+    do {
+        wordLen= strlen(text[i]);
+        if (wordLen ==0){i++; continue;}
+        else {letterSum+=wordLen; wordSum++; i++; histogramStats[wordLen]++;}
+    } 
+    while (wordLen != 0);
+    charAndSpaceSum = letterSum + (wordSum - 1);
+    
+    switch(epilogh){
+        default: printf("\nNot a valid operation!\n");break;
+        
+        case 1:
+            printf("\nLetters: %d\n Words: %d\n", letterSum, wordSum);
+            printf("Istogramma lekseon/xarakthron:");
+            for (int j=1; j<MAXCHARS; j++){
+                printf("\n%d: ", j);
+                for (int k=0;k<histogramStats[j]; k++){printf("#");}
             }
+            break;
         
-        }
-        printf("%d : ",i);
-        for(k=0; k<histogram_counter; k++){
-            printf("#");
-        }
-        printf("\n");
-        histogram_counter = 0;
-    }
-    printf("\n");
-    printf("The statistics will be saved at the file...(enter filename.txt)\n");
-    scanf(" %s",stats_file);
-    FILE *stats_ptr;
-    stats_ptr = fopen(stats_file, "w");
-    fprintf(stats_ptr, "Statistics\nWords : %d\nCharacters : %d\nCharacters with spaces : %d\nHistogram(Number of characters/Words)\n",words_counter,character_counter,characters_with_spaces);
-    for (i=1; i<characters+1; i++){
-        for (j=0; j<words_counter; j++){
-            if(strlen(text[j]) == i){
-                histogram_counter+=1;
+        case 2:
+            printf("\nDose onoma arxeiou statistikon (xoris extension): "); scanf("%s", fileName);
+            strcat(fileName, ".txt");
+            FILE *file = fopen(fileName, "w");
+            fprintf(file, "\nLetters: %d\n Words: %d\n\nIstogramma lekseon/xarakthron:", letterSum, wordSum);
+            for (int j=1; j<MAXCHARS; j++){
+                fprintf(file, "\n%d: ", j);
+                for (int k=0;k<histogramStats[j]; k++){fprintf(file, "#");}
             }
-        
-        }
-        fprintf(stats_ptr,"%d : ",i);
-        for(k=0; k<histogram_counter; k++){
-            fprintf(stats_ptr,"#");
-        }
-        fprintf(stats_ptr,"\n");
-        histogram_counter = 0;
+            fclose(file);
+            printf("'%s' has been made successfully!", fileName);
+            break;      
     }
-    fclose(stats_ptr);
-
-        
+    
 }
 
-
-
+void removeSpaces(char word[MAXCHARS+1]){
+    char wordCopy[MAXCHARS+1];
+    int j=0;
+    strcpy(wordCopy, word);
+    for (int i=0; i<MAXCHARS; i++){
+        if (wordCopy[i] != ' '){word[j++]=wordCopy[i];}
+    }
+    word[j]='\0';
+}
