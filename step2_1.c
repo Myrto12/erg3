@@ -51,6 +51,7 @@ int get_choice(void){
     int choice;
     printf("1: input text\n2: input vocabulary\n3: text processing\n4: text statistics\n5: exit\n");
     scanf(" %d", &choice);
+    while(getchar() != '\n');
     return choice;
 }
 
