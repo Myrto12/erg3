@@ -67,7 +67,7 @@ void text_input(char text[words][characters+1]){
 }
 
 void vocabulary_input(char vocabulary[words][characters+1]){
-   printf("vocabulary_input");
+   printf("vocabulary_input\n");
 }
 
 void text_processing(void){
