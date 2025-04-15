@@ -23,8 +23,6 @@ void array_in_lower_case(char array[words][characters+1]);
 int main(){
     static char text[words][characters+1];  
     static char vocabulary[words][characters+1];
-    char word[characters+1];
-    char endword[characters+1] = "telos";
     int exit =0;
     while(exit!=1){
         int choice = get_choice();
@@ -63,8 +61,6 @@ int get_choice(void){
 }
 
 void text_input(char text[words][characters+1]){
-    char word[characters+1];
-    char vocabulary[words][characters+1];
     char line[characters+1];
     char filename[characters+1];
     printf("Enter filename(filename.txt)\n");
