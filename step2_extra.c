@@ -90,7 +90,7 @@ void text_input(char text[words][characters+1]){
 
 void vocabulary_input(char vocabulary[words][characters+1]){
     char dict_file[characters+1];
-    printf("Enter dictionary file(filename.txt)");
+    printf("Enter dictionary file(filename.txt)\n");
     scanf(" %s",&dict_file);
     FILE *fptr;
     fptr = fopen(dict_file, "r");
