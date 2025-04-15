@@ -20,9 +20,6 @@ void text_statistics(char text[words][characters+1]);
 int main(){
     static char text[words][characters+1];  //static giati exw stack overflow
     static char vocabulary[words][characters+1];
-    char word[characters+1];
-    char endword[characters+1] = "telos";
-
     int exit =0;
     while(exit!=1){
         int choice = get_choice();
